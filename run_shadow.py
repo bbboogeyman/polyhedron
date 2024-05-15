@@ -14,6 +14,7 @@ try:
         Polyedr(f"data/{name}.geom").draw(tk)
         delta_time = time() - start_time
         print(f"Изображение полиэдра '{name}' заняло {delta_time} сек.")
+        print(f"Сумма площадей граней: {Polyedr(f'data/{name}.geom').find_area()}")
         input("Hit 'Return' to continue -> ")
 except (EOFError, KeyboardInterrupt):
     print("\nStop")

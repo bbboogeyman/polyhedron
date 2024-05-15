@@ -70,3 +70,23 @@ class TestVoid(unittest.TestCase):
     def test_center02(self):
         f = Facet([R3(0.0, 0.0, 0.0), R3(3.0, 0.0, 0.0), R3(0.0, 3.0, 0.0)])
         self.assertEqual(R3ApproxMatcher(f.center()), (R3(1.0, 1.0, 0.0)))
+
+    # Площадь треугольной грани
+    def test_area1(self):
+        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0), R3(0.0, 2.0, 0.0)])
+        self.assertEqual(f.area(), 2.0)
+
+    # Площадь квадратной грани
+    def test_area2(self):
+        a = R3(2.0, 2.0, 0.0)
+        f = Facet([R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0), R3(0.0, 2.0, 0.0), a])
+        self.assertEqual(f.area(), 4.0)
+
+    # Площадь шестиугольной грани
+    def test_area3(self):
+        vertexes = [R3(0.0, 0.0, 0.0), R3(2.0, 0.0, 0.0), R3(3.0, 2.0, 0.0)]
+        vertexes.append(R3(2.0, 3.0, 0.0))
+        vertexes.append(R3(1.0, 3.0, 0.0))
+        vertexes.append(R3(0.0, 2.0, 0.0))
+        f = Facet(vertexes)
+        self.assertEqual(f.area(), 7.0)

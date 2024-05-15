@@ -1,4 +1,4 @@
-from math import pi
+from math import pi, sqrt
 from functools import reduce
 from operator import add
 from common.r3 import R3
@@ -116,6 +116,18 @@ class Facet:
         return sum(self.vertexes, R3(0.0, 0.0, 0.0)) * \
             (1.0 / len(self.vertexes))
 
+    # Нахождение площади грани
+    def area(self):
+        area = 0
+        a = self.vertexes[1] - self.vertexes[0]
+        i = 2
+        while i < len(self.vertexes):
+            q = a.cross(self.vertexes[i] - self.vertexes[0])
+            area += 0.5 * sqrt(q.x**2 + q.y**2 + q.z**2)
+            a = self.vertexes[i] - self.vertexes[0]
+            i += 1
+        return area
+
 
 class Polyedr:
     """ Полиэдр """
@@ -127,6 +139,7 @@ class Polyedr:
 
         # списки вершин, рёбер и граней полиэдра
         self.vertexes, self.edges, self.facets = [], [], []
+        self.vertexes1, self.facets1 = [], []
 
         # список строк файла
         with open(file) as f:
@@ -146,6 +159,7 @@ class Polyedr:
                     x, y, z = (float(x) for x in line.split())
                     self.vertexes.append(R3(x, y, z).rz(
                         alpha).ry(beta).rz(gamma) * c)
+                    self.vertexes1.append(R3(x, y, z))
                 else:
                     # вспомогательный массив
                     buf = line.split()
@@ -153,11 +167,30 @@ class Polyedr:
                     size = int(buf.pop(0))
                     # массив вершин этой грани
                     vertexes = list(self.vertexes[int(n) - 1] for n in buf)
+                    vertexes1 = list(self.vertexes1[int(n) - 1] for n in buf)
                     # задание рёбер грани
                     for n in range(size):
                         self.edges.append(Edge(vertexes[n - 1], vertexes[n]))
                     # задание самой грани
                     self.facets.append(Facet(vertexes))
+                    self.facets1.append(Facet(vertexes1))
+
+    # Нахождение суммы площадей, удовлетворяющих условию
+    def find_area(self):
+        area = 0
+        facets = []
+        for i in self.facets1:
+            if i.center().x**2 + i.center().y**2 >= 1:
+                continue
+            else:
+                for j in i.vertexes:
+                    if j.x**2 + j.y**2 < 1:
+                        facets.append(i)
+                        break
+        area = 0
+        for i in facets:
+            area += i.area()
+        return area
 
     # Метод изображения полиэдра
     def draw(self, tk):  # pragma: no cover

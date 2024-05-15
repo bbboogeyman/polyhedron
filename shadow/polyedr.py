@@ -180,11 +180,11 @@ class Polyedr:
         area = 0
         facets = []
         for i in self.facets1:
-            if i.center().x**2 + i.center().y**2 >= 1:
+            if i.center().x**2 + i.center().y**2 <= 1:
                 continue
             else:
                 for j in i.vertexes:
-                    if j.x**2 + j.y**2 < 1:
+                    if j.x**2 + j.y**2 > 1:
                         facets.append(i)
                         break
         area = 0
